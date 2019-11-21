@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Water on Graphene</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="../stylesheet.css">
+<link rel="stylesheet" type="text/css" href="w3.css">
+<link rel="stylesheet" type="text/css" href="blog.css">
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+</head>
+<body onload="init()">
+
+<div class="topnav">
+  <a href="../index.html">Home</a>
+  <a href="../blog/index.html">Blog</a>
+  <div class="dropdown">
+    <button class="dropbtn">Reviews <i>&#x25bc;</i> </button>
+    <div class="dropdown-content">
+      <a href="../books.html">Book reviews</a>
+      <a href="../moocs.html">MOOC reviews</a>
+    </div>
+  </div>
+  <div class="dropdown">
+    <button class="dropbtn">Webapps <i>&#x25bc;</i> </button>
+    <div class="dropdown-content">
+      <a href="https://www.zetaprose.com" target="_blank">NLP fiction analysis tool</a>
+      <a href="../steno/index.html">Stenographic handwriting recognition</a>
+      <a href="../weatherapp/index.html">Climate comparison tool</a>
+    </div>
+  </div>
+  <div class="dropdown">
+    <button class="dropbtn">Fun <i>&#x25bc;</i> </button>
+    <div class="dropdown-content">
+      <a href="../food-frenzy/index.html">Food Frenzy</a>
+      <a href="../motus/index.html">Motus (word game)</a>
+      <a href="../fish/index.html">Fish (card game)</a>
+    </div>
+  </div>
+</div>
+<div class="content" style="max-width:1400px">
+
+<!-- Grid -->
+<div class="w3-row">
+
+<!-- Blog entries -->
+<div class="w3-col l8 s12">
+  <!-- Blog entry -->
+  <div class="w3-card-4 w3-margin w3-white">
+    <div class="w3-container textcard">
+
+<h1>Page counts and word counts by literary genre</h1>
+<h5 class="subtitle">Statistics based on scraped data <span class="blogentrydate">August 15, 2018</span></h5>
+
+  <p>Many websites give rough estimates of the number of pages or words per novel for various literary genres, but accurate, data-based statistics are difficult to find. Here's a breakdown of some stats I produced for eight of the top literary genres, based on the analysis of thousands of published novels.</p>
+  
+  <h3>How many pages in a novel?</h3>
+  
+  <p>Page counts were obtained by scraping the <a href="https://www.goodreads.com">Goodreads</a> website. For each genre, I took the first &asymp;400 novels from reader-voted lists of the top novels in that genre,<sup><a href="#fn1" id="ref1">1</a></sup> e.g. <a href="https://www.goodreads.com/list/show/728.The_Best_Fantasy_Books">The Best Fantasy Books</a>, <a href="https://www.goodreads.com/list/show/12362.All_Time_Favorite_Romance_Novels">All Time Favorite Romance Novels</a>, etc.</p>
+  
+  <p>Notes: I removed entries that were not single novels, such as anthologies, poetry collections, or entire series of books collected in one volume/one Goodreads entry. I also removed books listed as having 0 pages, so anything in the first bin of each histogram <i>("0-X pages")</i> really does have a non-zero number of pages less than X.</p>
+
+  <p> Total number of novels included in the study: 3200</p>
+
+<img class="responsive-image-half" src="./images/nPages_western.png">
+<img class="responsive-image-half" src="./images/nPages_literaryfiction.png">
+<img class="responsive-image-half" src="./images/nPages_sciencefiction.png">
+<img class="responsive-image-half" src="./images/nPages_thrillers.png">
+<img class="responsive-image-half" src="./images/nPages_mysteryandcrime.png">
+<img class="responsive-image-half" src="./images/nPages_romance.png">
+<img class="responsive-image-half" src="./images/nPages_fantasy.png">
+<img class="responsive-image-half" src="./images/nPages_historical.png">
+
+  <p>Some genres (fantasy, historical, science fiction and literary fiction) have a very broad distribution of page-count values with a long tail, and historical novels in particular can be extremely long. Romance, thrillers, westerns and crime fiction have a much narrower distribution. Here's the same data in a table:</p>
+
+  <table>
+    <tr><th>Genre</th><th>Number of pages (interquartile range)</th></tr>
+    <tr><td>western</td><td>230-384</td></tr>
+    <tr><td>literary fiction</td><td>244-454</td></tr>
+    <tr><td>science fiction</td><td>253-465</td></tr>
+    <tr><td>thrillers</td><td>279-432</td></tr>
+    <tr><td>mystery and crime</td><td>283-432</td></tr>
+    <tr><td>romance</td><td>309-432</td></tr>
+    <tr><td>fantasy</td><td>304-512</td></tr>
+    <tr><td>historical</td><td>352-600</td></tr>
+  </table>
+  <!--<p>"Interquartile range": basically this means that the "middle" or "typical" 50% of books in this genre fall into this range.</p>-->
+
+  
+  <h3>How many words per page?</h3>
+  
+  <p>When discussing unpublished manuscripts, English-speaking writers and editors usually count words and not pages, so I also wanted to look at the number of words per novel. It's not easy to get hold of hard data on that. In general, publishers are reluctant to release this information.</p>
+
+  <p>I pieced together a list of word counts for &asymp;100 novels, based on various exact novel word counts I found on the internet,<sup><a href="#fn2" id="ref2">2</a></sup> and a count (using linux wc) of books I could download in electronic format. I then crossed this with the page counts I already had from Goodreads.</p>
+  
+  <p>Note: this data is heavily biased towards very well-known books, because those are the books it's easiest to get word-count data for. Also, a book with several editions will have different page counts and therefore different average words-per-page for each edition. I took the edition listed by Goodreads in each case.</p>
+
+  <p>First of all, here's the distribution of words-per-page values.</p>
+  
+  <img class="responsive-image-twothird center-image" src="images/nWordsPerPage.png" width="450" alt="words per page distribution" class="center">
+
+  <p>A few minutes of Googling produces the often-quoted figure of 250 to 300 words per page as an industry standard for published novels. For the 100 books in this study, the average number of words per page is 293.</p>
+  
+  <p>Now, let's take a look at the words-per-page as a function of the total number of pages in the book.</p>
+
+  <img class="responsive-image-twothird center-image" src="images/nWordsPerPage_fn_nWords.png" width="450" alt="words per page as a function of number of words" class="center">
+
+  <p>I like the above graphic because it clearly shows some of the tactics publishers employ. At low-to-medium words counts, the number of words per page is correlated with the book's total word count. In other words, for shorter novels publishers put less words per page, presumably to make the book thicker and seem more worth buying. As novels grow longer, more words are squeezed onto a single page, presumably to stop the book getting too thick and too expensive to print. Above 400-500 words per page or so, we reach a plateau where publishers simply can't squeeze more words onto the page and the only option is to add more pages.</p> 
+  
+  <h3>How many words in a novel?</h3>
+  
+  <p>Since writers tend to be interested in word counts rather than page counts, here's the above genre-specific data converted from page count to word count. The words-per-page conversion factor used for each individual book was predicted based on the page count scraped from Goodreads, using a regularized polynomial regression model fitted to the above words-per-page data.</p>
+
+<img class="responsive-image-half" src="./images/nWords_western.png">
+<img class="responsive-image-half" src="./images/nWords_literaryfiction.png">
+<img class="responsive-image-half" src="./images/nWords_sciencefiction.png">
+<img class="responsive-image-half" src="./images/nWords_thrillers.png">
+<img class="responsive-image-half" src="./images/nWords_mysteryandcrime.png">
+<img class="responsive-image-half" src="./images/nWords_romance.png">
+<img class="responsive-image-half" src="./images/nWords_fantasy.png">
+<img class="responsive-image-half" src="./images/nWords_historical.png">
+
+  <table>
+    <tr><th>Genre</th><th>Number of words (interquartile range)</th></tr>
+    <tr><td>western</td><td>63k-110k</td></tr>
+    <tr><td>literary fiction</td><td>67k-134k</td></tr>
+    <tr><td>science fiction</td><td>69k-138k</td></tr>
+    <tr><td>thrillers</td><td>77k-127k</td></tr>
+    <tr><td>mystery and crime</td><td>78k-127k</td></tr>
+    <tr><td>romance</td><td>86k-127k</td></tr>
+    <tr><td>fantasy</td><td>85k-155k</td></tr>
+    <tr><td>historical</td><td>100k-188k</td></tr>
+  </table>
+  <!--<p>"Interquartile range": basically this means that the "middle" or "typical" 50% of books in this genre fall into this range.</p>-->
+
+  <h4>Notes and footnotes</h4>
+  
+  <div class="footnotes"> 
+  <p>Open source libraries used: Data scraped and parsed with requests and BeautifulSoup, analysed with pandas, plotted with matplotlib</p>
+  
+  <p id="fn1">1. [Text of footnote 1]<a href="#ref1" title="Jump back to footnote 1 in the text.">#</a></p>
+  
+                    'romance': 'https://www.goodreads.com/list/show/12362.All_Time_Favorite_Romance_Novels',
+                    'science fiction': 'https://www.goodreads.com/list/show/19341.Best_Science_Fiction',
+                    'fantasy': 'https://www.goodreads.com/list/show/728.The_Best_Fantasy_Books',
+                    'western': 'https://www.goodreads.com/list/show/1243.Best_Westerns',
+                    'literary fiction': 'https://www.goodreads.com/list/show/1425.Best_Literary_Fiction_',
+                    'thrillers': 'https://www.goodreads.com/list/show/1112.Best_Thrillers',
+                    'mystery and crime': 'https://www.goodreads.com/list/show/11.Best_Crime_Mystery_Books',
+                    'historical': 'https://www.goodreads.com/list/show/15.Best_Historical_Fiction',
+  
+  <p id="fn2">2. [Text of footnote 2]<a href="#ref2" title="Jump back to footnote 2 in the text.">#</a></p>
+https://textfiles.com/etext/FICTION/, http://commonplacebook.com/art/books/word-count-for-famous-novels/, http://www.arbookfind.com/default.aspx
+
+  </div> <!-- end footnotes -->
+
+<!-- END BLOG ENTRY -->
+</div>
+</div>
+
+<!-- END BLOG ENTRIES -->
+</div>
+
+<!-- Blog Home -->
+<div>
+    <p><a class="w3-button w3-padding-large w3-white w3-border" href="index.html"><b>BACK TO BLOG HOME</b></a></p>
+</div>
+
+
+<!-- Introduction menu -->
+<div class="w3-col l4">
+
+  <!-- Posts -->
+  <div class="w3-card w3-margin textcard">
+    <div class="w3-container w3-padding">
+      <h4>Top Posts</h4>
+    </div>
+    <ul class="w3-ul w3-hoverable w3-white">
+      <li class="w3-padding-16">
+        <span class="w3-large"><a href="entry_matrix_dimensions_nn.html">2018-04-02 Matrix Dimensions in Neural Networks</a></span><br>
+      </li>
+      <li class="w3-padding-16">
+        <span class="w3-large"><a href="entry_hmm.html">2018-05-25 Resources for implementing a HMM from scratch</a></span><br>
+      </li>
+      <li class="w3-padding-16">
+        <span class="w3-large"><a href="entry_wordcounts.html">2018-08-15 Page counts and word counts by literary genre</a></span><br>
+      </li>
+    </ul>
+  </div>
+  <hr>
+
+  <!-- Labels / tags -->
+  <!--<div class="w3-card w3-margin">
+    <div class="w3-container w3-padding">
+      <h4>Tags</h4>
+    </div>
+    <div class="w3-container w3-white" id="tags">
+      <span class="w3-tag w3-light-grey w3-margin-bottom blogtag"><a href="tags_ml_algos.html">ML algos</a></span> 
+      <span class="w3-tag w3-light-grey w3-margin-bottom blogtag"><a href="tags_viz.html">analysis and viz</a></span> 
+      <span class="w3-tag w3-light-grey w3-margin-bottom blogtag"><a href="tags_nlp.html">NLP</a></span>
+    </p>
+    </div>
+  </div>-->
+
+<!-- END Introduction Menu -->
+</div>
+
+<!-- END GRID -->
+</div><br>
+
+<!-- END content -->
+</div>
+
+<!-- Footer -->
+<!--
+<footer class="w3-container w3-dark-grey w3-padding-32 w3-margin-top">
+  <button class="w3-button w3-black w3-disabled w3-padding-large w3-margin-bottom">Previous</button>
+  <button class="w3-button w3-black w3-padding-large w3-margin-bottom">Next &raquo</button>
+</footer>
+-->
+
+
+
+<div class="footer">
+  <p>CSS stylesheet from W3 schools</p>
+</div>
+
+</body>
+</html>
+

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Water on Graphene</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="../stylesheet.css">
+<link rel="stylesheet" type="text/css" href="w3.css">
+<link rel="stylesheet" type="text/css" href="blog.css">
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+</head>
+<body onload="init()">
+
+<div class="topnav">
+  <a href="../index.html">Home</a>
+  <a href="../blog/index.html">Blog</a>
+  <div class="dropdown">
+    <button class="dropbtn">Reviews <i>&#x25bc;</i> </button>
+    <div class="dropdown-content">
+      <a href="../books.html">Book reviews</a>
+      <a href="../moocs.html">MOOC reviews</a>
+    </div>
+  </div>
+  <div class="dropdown">
+    <button class="dropbtn">Webapps <i>&#x25bc;</i> </button>
+    <div class="dropdown-content">
+      <a href="https://www.zetaprose.com" target="_blank">NLP fiction analysis tool</a>
+      <a href="../steno/index.html">Stenographic handwriting recognition</a>
+      <a href="../weatherapp/index.html">Climate comparison tool</a>
+    </div>
+  </div>
+  <div class="dropdown">
+    <button class="dropbtn">Fun <i>&#x25bc;</i> </button>
+    <div class="dropdown-content">
+      <a href="../food-frenzy/index.html">Food Frenzy</a>
+      <a href="../motus/index.html">Motus (word game)</a>
+      <a href="../fish/index.html">Fish (card game)</a>
+    </div>
+  </div>
+</div>
+
+
+<div class="content" style="max-width:1400px">
+
+<!-- Grid -->
+<div class="w3-row">
+
+<!-- Blog entries -->
+<div class="w3-col l8 s12">
+  <!-- Blog entry -->
+  <div class="w3-card-4 w3-margin w3-white">
+    <div class="w3-container textcard">
+
+<h1 id="matrix-dimensions-in-feedforward-neural-network">Matrix dimensions in feedforward neural network</h1>
+<h5 class="subtitle">Working out matrix dimensions using the rules of matrix multiplication <span class="blogentrydate">April 2, 2018</span></h5>
+<p>I read tutorials about neural networks, I used the scikit-learn and tensorflow implementations, but when I tried to implement one myself from scratch, I realised I still had several questions like:</p>
+<ul>
+<li>What are the dimensions of the weights matrix for each layer?</li>
+<li>In what order should I multiply the matrices?</li>
+<li>In what circumstances should I transpose one or other of the matrices before taking the product?</li>
+<li>What about the rows or columns corresponding to the bias nodes? When should I exclude or include them?</li>
+</ul>
+<p>You can look that stuff up and copy it blindly, but you can also work it out for yourself using the rules of matrix multiplication, as below.</p>
+<h1 id="quick-recap-of-feedforward-neural-networks">Quick recap of feedforward neural networks</h1>
+<p>I&#39;m going to assume you already know the basic principles of how feedforward neural networks work, but you still have some questions about how to implement one in practice... Let&#39;s look at a classification problem, and define some notation.</p>
+<h2 id="input-and-output">Input and output</h2>
+<p>Input data contains $n_{f}$ features and we&#39;re going to feed $n$ training samples through the network. The input matrix $X$ has dimensions $n \times n_f$, (<code>n_samples * n_features</code>, one row for each sample, one column for each feature). </p>
+<p>Output data is one of $n_c$ classes. We use a one-hot encoder, therefore the output matrix $Y$ has dimensions $n \times n_c$ (<code>n_samples * n_classes</code>, one row for each sample, one column for each class).</p>
+<p>We&#39;ll use $i$ to iterate over nodes/features/classes and $j$ to iterate over samples.</p>
+<h2 id="notation">Notation</h2>
+<img class="responsive-image" src="./images/ff_neural_network_no_bias.png">
+<p>In the input layer, for node (feature) $i$ and sample $j$, $a^{(1)}_{ij} = x_{ij}$. Values are then forward-propagated through the network using an alternating sequence of linear combinations and non-linear transformations.</p>
+<p>For the sample $j$, the input $z_{ij}^{(l)}$ to node $i$ in layer $l$ is a linear combination with parameters $w$ of the outputs $a$ of all nodes in layers $l-1$:</p>
+<p>$z_{ij}^{(l)} = \sum\limits_{k=1}^{m^{(l-1)}} w_{ik}^{(l-1\rightarrow l)} a_{kj}^{(l-1)}$</p>
+<p>where $w_{ik}^{(l-1\rightarrow l)} = w_{k\rightarrow i}^{(l-1\rightarrow l)}$ is the weight for going from node $k$ in layer $l-1$ to node $i$ in layer $l$, and $m^{(l-1)}$ is the number of nodes in layer $l-1$.</p>
+<p>This is followed by a non-linear transformation with no parameters:</p>
+<p>$a_{ij}^{(l)} = \sigma(z_{ij}^{(l)})$</p>
+<p>where $\sigma(z)$ (the activation function) is for example a sigmoid, tanh, softmax or other function with the properties: non-linear, differentiable, monotonic.</p>
+<p>Finally the output $y^{(L)}_{ij} = a_{ij}^{(L)}$, where L is the total number of layers, including input, hidden and output layers. (Notice that we numbered the layers starting from 1.)</p>
+<h1 id="using-matrix-multiplication-rules-to-work-out-dimensions">Using matrix multiplication rules to work out dimensions</h1>
+<p>Now how to write the above equations in matrix form, so we can easily forward-propagate many samples at once?</p>
+<p>In the matrix multiplication product $\mathbf{BC}$, for any two matrices $\mathbf{B}$ and $\mathbf{C}$, each element of the new matrix is the scalar product of a <em>row</em> from $\mathbf{B}$ and a <em>column</em> from $\mathbf{C}$.</p>
+<p>$\mathbf{D}_{ij} = \sum\limits_{k=1}^m \mathbf{B}_{ik}\mathbf{C}_{kj}$</p>
+<p>where $m$ is the number of columns in $\mathbf{B}$ and the number of rows in $\mathbf{C}$. (They have to be the same, otherwise we can&#39;t multiply the two matrices!)</p>
+<p>Now coming back to our neural network, let&#39;s say for example we want to calculate the input for node $i$ and sample $j$ in layer 2. We said above that was:</p>
+<p>$z_{ij}^{(2)} = \sum\limits_{k=1}^{m^{(1)}} w^{(1\rightarrow 2)}_{ik}a_{kj}^{(1)}$</p>
+<p>where $m^{(1)}$ is the number of nodes in the previous layer and $a_k$ is the output of node $k$ in the previous layer, and $w$ is from the weight matrix $\mathbf{W}^{(1\rightarrow 2)}$. Remember that $w_{ik}$ is $w_{k\rightarrow i}$, the weight for going from node $k$ in one layer to node $i$ in the next layer.</p>
+<p>So we&#39;ve got some obvious correspondances between the matrix multiplication equation and the neural network equation. And we know we want to take the product between a matrix $\mathbf{W}$ containing the weights and a matrix $\mathbf{A}$ containing the activations. What are the dimensions of these matrices?</p>
+<p>By the rules of matrix multiplication, to get a matrix of dimensions $m^{(2)} \times n$, we must multiply matrices of dimensions $m^{(2)} \times ?$ and $? \times n$, in that order.</p>
+<p>We know that $\mathbf{A}$ and $\mathbf{Z}$ have to have coherent dimensions, e.g. if $\mathbf{A}^1$ has dimensions $m^{(1)} \times n$ (<code>n_nodes_in_layer_1 * n_samples</code>), then $\mathbf{Z}^2$ has dimensions $m^{(2)} \times n$ (<code>n_nodes_in_layer_2 * n_samples</code>), and not $n \times m^{(2)}$.</p>
+<p>Let&#39;s try setting the dimensions like that ($\mathbf{A}$ has dimensions $m^{(1)} \times n$ and $\mathbf{Z}$ has dimensions $m^{(2)} \times n$).</p>
+<p>So $\mathbf{W}$ must have dimensions $m^{(2)} \times m^{(1)}$, and our matrix multiplication will be</p>
+<p>$\mathbf{Z}^2 = \mathbf{W}^{(1\rightarrow 2)}\mathbf{A}^1$</p>
+<p>Now what are the entries inside each matrix?</p>
+<p>In $\mathbf{Z}$ and $\mathbf{A}$, each row is a node and each column is an sample. In $\mathbf{W}$, we need:</p>
+<p>$\mathbf{W} = {\begin{bmatrix} w_{11}       &amp; w_{12}       &amp; \cdots &amp; w_{1m^{(1)}}\\
+                               w_{21}       &amp; w_{22}       &amp; \cdots &amp; w_{2m^{(1)}}\\
+                               \vdots       &amp; \vdots       &amp; \ddots &amp; \vdots\\
+                               w_{m^{(2)}1} &amp; w_{m^{(2)}2} &amp; \cdots &amp; w_{m^{(2)}m^{(1)}}\\
+               \end{bmatrix}}$</p>
+<p>where $w_{ik}$ is $w_{k\rightarrow i}$, the weight for going from node $k$ in one layer to node $i$ in the next layer.</p>
+<p>Let&#39;s check this matrix multiplication really does what we want.</p>
+<p>In the matrix $\mathbf{Z}$, what is the entry $z_{ij}$, the input for node $i$ and sample data point $j$? Following the rules of matrix multiplication, we take the dot product of row $i$ of $\mathbf{W}$ and column $j$ of $\mathbf{A}$.</p>
+<p>Row $i$ of $\mathbf{W}$ contains the vector ${\begin{bmatrix} w_{i,1} &amp; w_{i,2} &amp; \cdots &amp; w_{i,m^{(1)}}\end{bmatrix}}$.</p>
+<p>Column $j$ of $\mathbf{A}$ contains the vector $\begin{bmatrix} a_{1,j} \\ a_{2,j} \\ \vdots \\ a_{m^{(1)},j}\end{bmatrix}$ (the outputs of all nodes in the previous layer, for the sample $j$). So now</p>
+<p>$z_{ij} = \sum\limits_{k=1}^{m^{(1)}} w_{ik} a_{kj}$</p>
+<p>the result we wanted!</p>
+<h1 id="but-what-if-we-d-switched-everything-around-">But what if we&#39;d switched everything around?</h1>
+<p>What if $\mathbf{A}$ has dimensions $n \times m^{(1)}$, $\mathbf{Z}$ has dimensions $n \times m^{(2)}$ and the matrix multiplication is $\mathbf{Z = AW}$?</p>
+<p>Now we need a $\mathbf{W}$ matrix of dimensions $m^{(1)} \times m^{(2)}$. So let&#39;s transpose our previous $\mathbf{W}$:</p>
+<p>$\mathbf{W} = {\begin{bmatrix} w_{11}       &amp; w_{12}       &amp; \cdots &amp; w_{1m^{(2)}}\\
+                               w_{21}       &amp; w_{22}       &amp; \cdots &amp; w_{2m^{(2)}}\\
+                               \vdots       &amp; \vdots       &amp; \ddots &amp; \vdots\\
+                               w_{m^{(2)}1} &amp; w_{m^{(2)}2} &amp; \cdots &amp; w_{m^{(1)}m^{(2)}}\\
+               \end{bmatrix}}$</p>
+<p>where $w_{ki}$ is now $w_{k\rightarrow i}$, the weight for going from node $k$ in one layer to node $i$ in the next layer</p>
+<p>Now let&#39;s test the matrix multiplication $\mathbf{Z = AW}$. Let&#39;s find the entry $z_{ji}$ in matrix $\mathbf{Z}$, the input for node $i$ and sample data point $j$. Note that we&#39;re still using $j$ to iterate over samples and $i$ to iterate over nodes, as before, so now the entry we&#39;re interested in is labelled $z_{ji}$ (because by convention matrix indexing is always row-first, column-second).</p>
+<p>This time we&#39;re taking row $j$ of $\mathbf{A}$ and row $i$ of $\mathbf{W}$. Each row of $\mathbf{A}$ contains one sample now.</p>
+<p>$z_{ji} = \sum\limits_{k=1} ^ {m^{(1)}} a_{jk} w_{ki}$</p>
+<p>So it still works!</p>
+<p>Note that however, this doesn&#39;t mean you can just keep transposing and switching around your matrices until you find a combination that works! If some of your matrices happen to be square, you might find a combination that doesn&#39;t make your code crash but nevertheless produces nonsense...</p>
+<p>Personally I prefer the first formulation because it&#39;s more conventional for the weight entry $w_{1,2}$ to be $w_{2\rightarrow 1}$ and not $w_{1\rightarrow 2}$.</p>
+<h1 id="input-and-output-matrix-dimensions">Input and output matrix dimensions</h1>
+<p>Our input matrix $\mathbf{X}$ usually has dimensions $n \times n_f$, (<code>n_samples * n_features</code>), if it comes e.g. from a dataframe with features as column headers and a row for each sample.</p>
+<p>For the same reasons, the matrix $\mathbf{Y}$ usually has dimensions $n \times n_c$ (<code>n_samples * n_classes</code>).</p>
+<p>But above, we saw the $\mathbf{Z}$ and $\mathbf{A}$ matrices had dimensions $m^{(l)} \times n$ (<code>n_nodes_in_layer_l * n_samples</code>).</p>
+<p>So we&#39;ll have to transpose the matrix $\mathbf{X}$ before feeding it into the network, and transpose the matrix $\mathbf{Y}$ at the end.</p>
+<h1 id="biases">Biases</h1>
+<p>Now what if we want to add a bias node to every layer? We can either put the biases in a separate array, or add them to the weights arrays and add a corresponding vector of ones to $\mathbf{A}$. But should we add a row or a column, at the start or the end of the matrix? Also, bias nodes have output but no input, and they don&#39;t contribute to gradient descent. So when should we include them and when should we exclude them? That&#39;s an entry for another day!</p>
+
+<!-- END BLOG ENTRY -->
+</div>
+</div>
+
+<!-- END BLOG ENTRIES -->
+</div>
+
+<!-- Blog Home -->
+<div>
+    <p><a class="w3-button w3-padding-large w3-white w3-border" href="index.html"><b>BACK TO BLOG HOME</b></a></p>
+</div>
+
+
+<!-- Introduction menu -->
+<div class="w3-col l4">
+
+  <!-- Posts -->
+  <div class="w3-card w3-margin textcard">
+    <div class="w3-container w3-padding">
+      <h4>Top Posts</h4>
+    </div>
+    <ul class="w3-ul w3-hoverable w3-white">
+      <li class="w3-padding-16">
+        <span class="w3-large"><a href="entry_matrix_dimensions_nn.html">2018-04-02 Matrix Dimensions in Neural Networks</a></span><br>
+      </li>
+      <li class="w3-padding-16">
+        <span class="w3-large"><a href="entry_hmm.html">2018-05-25 Resources for implementing a HMM from scratch</a></span><br>
+      </li>
+      <li class="w3-padding-16">
+        <span class="w3-large"><a href="entry_wordcounts.html">2018-08-15 Page counts and word counts by literary genre</a></span><br>
+      </li>
+    </ul>
+  </div>
+  <hr>
+
+  <!-- Labels / tags -->
+  <!--<div class="w3-card w3-margin">
+    <div class="w3-container w3-padding">
+      <h4>Tags</h4>
+    </div>
+    <div class="w3-container w3-white" id="tags">
+      <span class="w3-tag w3-light-grey w3-margin-bottom blogtag"><a href="tags_ml_algos.html">ML algos</a></span> 
+      <span class="w3-tag w3-light-grey w3-margin-bottom blogtag"><a href="tags_viz.html">analysis and viz</a></span> 
+      <span class="w3-tag w3-light-grey w3-margin-bottom blogtag"><a href="tags_nlp.html">NLP</a></span>
+    </p>
+    </div>
+  </div>-->
+
+<!-- END Introduction Menu -->
+</div>
+
+<!-- END GRID -->
+</div><br>
+
+<!-- END content -->
+</div>
+
+<!-- Footer -->
+<!--
+<footer class="w3-container w3-dark-grey w3-padding-32 w3-margin-top">
+  <button class="w3-button w3-black w3-disabled w3-padding-large w3-margin-bottom">Previous</button>
+  <button class="w3-button w3-black w3-padding-large w3-margin-bottom">Next &raquo</button>
+</footer>
+-->
+
+
+
+<div class="footer">
+  <p>CSS stylesheet from W3 schools</p>
+</div>
+
+</body>
+</html>
+

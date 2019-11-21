@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Water on Graphene</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="../stylesheet.css">
+<link rel="stylesheet" type="text/css" href="w3.css">
+<link rel="stylesheet" type="text/css" href="blog.css">
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+</head>
+<body onload="init()">
+
+<div class="topnav">
+  <a href="../index.html">Home</a>
+  <a href="../blog/index.html">Blog</a>
+  <div class="dropdown">
+    <button class="dropbtn">Reviews <i>&#x25bc;</i> </button>
+    <div class="dropdown-content">
+      <a href="../books.html">Book reviews</a>
+      <a href="../moocs.html">MOOC reviews</a>
+    </div>
+  </div>
+  <div class="dropdown">
+    <button class="dropbtn">Webapps <i>&#x25bc;</i> </button>
+    <div class="dropdown-content">
+      <a href="https://www.zetaprose.com" target="_blank">NLP fiction analysis tool</a>
+      <a href="../steno/index.html">Stenographic handwriting recognition</a>
+      <a href="../weatherapp/index.html">Climate comparison tool</a>
+    </div>
+  </div>
+  <div class="dropdown">
+    <button class="dropbtn">Fun <i>&#x25bc;</i> </button>
+    <div class="dropdown-content">
+      <a href="../food-frenzy/index.html">Food Frenzy</a>
+      <a href="../motus/index.html">Motus (word game)</a>
+      <a href="../fish/index.html">Fish (card game)</a>
+    </div>
+  </div>
+</div>
+
+
+<div class="content" style="max-width:1400px">
+
+<!-- Grid -->
+<div class="w3-row">
+
+<!-- Blog entries -->
+<div class="w3-col l8 s12">
+  <!-- Blog entry -->
+  <div class="w3-card-4 w3-margin w3-white">
+    <div class="w3-container textcard">
+
+<h1>Optical Character Recognition for Gregg's stenography</h1>
+<h5 class="subtitle">Using deep neural networks to read shorthand <span class="blogentrydate">February 10, 2019</span></h5>
+  
+  <p>Gregg's stenography is one of the most widely used shorthand writing systems for the English language, with tens of thousands of users worldwide. Unfortunately, no complete Optical Character Recognition model exists for transcribing handwritten Gregg's shorthand into typewritten text, although there have been some academic works modelling a limited number of characters or different shorthand systems.<a href="#fn1" id="ref1">[1]</a>, <a href="#fn2" id="ref2">[2]</a>, <a href="#fn3" id="ref3">[3]</a></p>
+
+  <p>Gregg's shorthand is a combination of "brief forms" (symbolic abbreviations for common words) and a phonetic alphabet (symbols which are combined together to form longer words for which no brief form exists).</p>
+
+  <img class="responsive-image-half centerimage" src="../images/gregg040.gif">
+
+  <p><b>Goal of the project:</b> Build a working prototype with an OCR model that can recognise 300 brief forms</p>
+
+  <p><b>Long-term goal:</b> an Android virtual keyboard app that can interpret Gregg's stenography</p>
+
+  <h3>Context and principal challenges</h3>
+  <ul>
+  <li>Because shorthand uses highly simplified symbols, there is no redunancy in the encoded information, therefore the recognition task is much more difficult than with regular longhand handwriting. (Humans also find shorthand much more difficult to read than regular handwriting because of this lack of redundancy.)</li>
+  <li>Unlike in regular handwriting, the meaning of Gregg's shorthand symbols depends not only on the shape but also on the relative size of the characters. Therefore it's not possible to unambiguously recognise each character or word in isolation, but only in the context of a longer written text.</li>
+  <li>Lack of data: existing printed dictionaries of Gregg's shorthand are difficult to digitize because of the highly dense unstructured format.</li>
+  <li>In long form words (words for which there is no brief form), an alphabet of symbols representing phonetic sounds are chained together to form words. However, the overlapping shape of the combined symbols on the page is such that it is difficult to segment them into individual characters.</li>
+  </ul>
+
+  <h3>Machine learning model</h3>
+
+  <p>Source code: <a href="https://github.com/acfogarty/stenography">https://github.com/acfogarty/stenography</a></p>
+
+  <h4>Basic functionality - brief forms</h4>
+  <ol>
+  <li>Extract image from html5 canvas interface.</li>
+  <li>Crop image to the bounding box containing the written pixels forming the stenographic symbol.</li>
+  <li>Feed the cropped image into a convolutional neural network with a softmax output layer.</li>
+  <li>If the softmax output layer indicates several possible short-form transcriptions with similar probabilities, use a word-based language model to distinguish between them.</li>
+  <li>If the image is not a recognised brief form, use the long-form model (see below).</li>
+  </ol>
+
+  <h4>Advanced functionality - long forms (TODO)</h4>
+  <ol>
+  <li>Segment long-form words into individual characters.</li>
+  <li>Transcribe the individual characters using a convolutional neural network with softmax output (each character can map to multiple English letters).</li>
+  <li>Use both character-based and word-based language models to reconstruct the transcribed English word.</li>
+  <li>Alternative: use recurrent neural network to transcribe sequence of individual characters.</li>
+  </ol>
+  <h4>Tech stack</h4>
+  <ul>
+  <li>Simple feedforward neural network encoded from scratch in Python (numpy) for training the model (forward and backprop), and in JavaScript for the prototype webapp (forward propogation only).</li>
+  <li>Convolutional neural network in TensorFlow for training the model, and in TensorFlow.js for the prototype webapp using the pre-trained model.</li>
+  <li>Python (nltk) for the Kneser-Ney N-gram language model.</li>
+  <li>Html5 canvas and vanilla JavaScript for the webapp interface.</p>
+  </ul>
+
+  <h4>Version 1: recognising a limited number of brief forms</h4>
+
+  <p>Recognising brief forms is a typical supervised learning classification problem, similar to e.g. handwritten digit recognition. The only difficulty comes from the large number of classes and limited data.
+  Standard Gregg's shorthand contains hundreds of commonly used brief forms. In V1 of the model we have only 7 classes (7 different brief forms recognised).</p>
+
+  <p>A simple feedforward neural network with two layers already achieves 85% accuracy with less than a thousand training set examples.</p>
+
+  <h4>Version 2: recognising a greater number of brief forms</h4>
+
+  <p>Increase the number of classes to 100. Increase the training set size by a factor of 10. Switch to a convolutional neural network.</p>
+
+  <h4>Version 3: including context of surrounding tokens</h4>
+
+  <p>Some of the brief forms can correspond to several different English words with similar prononciation. For example, <i>their</i>, <i>there</i> and <i>they're</i> all have the same brief form in Gregg's shorthand.</p>
+
+  <p>Also, the interpretation of some of the brief forms depends on the relative size of the written character, e.g. <i>or</i> and <i>will</i> have the same brief form except that <i>will</i> is written with a longer stroke than <i>or</i>. When taking the brief forms one by one, as in the V1 and V2 classifiers, it's impossible to judge their relative size.</p>
+
+  <p>A human reader uses the context of the surrounding text to disambiguate these cases. Here, we do the same thing using an N-gram language model to choose the most probable interpretation based on the context of the preceding words.</p>
+
+  <h4>Future versions</h4>
+
+  <p>Long-form words are composed of several individual phonetic characters chained together and must be segmented before the individual characters can be recognised. Should we use a recurrent neural network on the sequence, or convolutional neural network on individual characters + N-gram-based language model for context? To Be Decided...</p>
+
+  <p>It will also be necessary to take scanned pdfs of Gregg's shorthand dictionaries and manuals, detect handwritten shorthand and typewritten longhand on pages which contain both, and build a larger dataset of labelled examples.</p>
+
+  <h3>Current prototype</h3>
+
+  <p>Current prototype (v1) can be found <a href="../steno/index.html">here</a>.</p>
+
+  <img class="responsive-image-half centerimage" src="../images/steno_screenshot.png" alt="stenography webapp screenshot">
+
+<h3>References</h3>
+
+<div class="footnotes">
+
+  <p id="fn1">1. https://core.ac.uk/download/pdf/143867218.pdf<a href="#ref1" title="Jump back to footnote 1 in the text.">#</a></p>
+  <p id="fn2">2. https://www.ijcaonline.org/archives/volume41/number9/5572-7666<a href="#ref2" title="Jump back to footnote 2 in the text.">#</a></p>
+  <p id="fn3">3. https://link.springer.com/chapter/10.1007%2F978-3-030-00794-2_24<a href="#ref3" title="Jump back to footnote 3 in the text.">#</a></p>
+
+
+
+
+
+
+</div>
+
+<!-- END BLOG ENTRY -->
+</div>
+</div>
+
+<!-- END BLOG ENTRIES -->
+</div>
+
+<!-- Blog Home -->
+<div>
+    <p><a class="w3-button w3-padding-large w3-white w3-border" href="index.html"><b>BACK TO BLOG HOME</b></a></p>
+</div>
+
+
+
+<!-- Introduction menu -->
+<div class="w3-col l4">
+
+  <!-- Posts -->
+  <div class="w3-card w3-margin textcard">
+    <div class="w3-container w3-padding">
+      <h4>Top Posts</h4>
+    </div>
+    <ul class="w3-ul w3-hoverable w3-white">
+      <li class="w3-padding-16">
+        <span class="w3-large"><a href="entry_matrix_dimensions_nn.html">2018-04-02 Matrix Dimensions in Neural Networks</a></span><br>
+      </li>
+      <li class="w3-padding-16">
+        <span class="w3-large"><a href="entry_hmm.html">2018-05-25 Resources for implementing a HMM from scratch</a></span><br>
+      </li>
+      <li class="w3-padding-16">
+        <span class="w3-large"><a href="entry_wordcounts.html">2018-08-15 Page counts and word counts by literary genre</a></span><br>
+      </li>
+    </ul>
+  </div>
+  <hr>
+
+  <!-- Labels / tags -->
+  <!--<div class="w3-card w3-margin">
+    <div class="w3-container w3-padding">
+      <h4>Tags</h4>
+    </div>
+    <div class="w3-container w3-white" id="tags">
+      <span class="w3-tag w3-light-grey w3-margin-bottom blogtag"><a href="tags_ml_algos.html">ML algos</a></span> 
+      <span class="w3-tag w3-light-grey w3-margin-bottom blogtag"><a href="tags_viz.html">analysis and viz</a></span> 
+      <span class="w3-tag w3-light-grey w3-margin-bottom blogtag"><a href="tags_nlp.html">NLP</a></span>
+    </p>
+    </div>
+  </div>-->
+
+<!-- END Introduction Menu -->
+</div>
+
+<!-- END GRID -->
+</div><br>
+
+<!-- END content -->
+</div>
+
+<!-- Footer -->
+<!--
+<footer class="w3-container w3-dark-grey w3-padding-32 w3-margin-top">
+  <button class="w3-button w3-black w3-disabled w3-padding-large w3-margin-bottom">Previous</button>
+  <button class="w3-button w3-black w3-padding-large w3-margin-bottom">Next &raquo</button>
+</footer>
+-->
+
+
+
+<div class="footer">
+  <p>CSS stylesheet from W3 schools</p>
+</div>
+
+</body>
+</html>
+

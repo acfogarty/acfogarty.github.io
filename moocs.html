@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Water on Graphene</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="stylesheet.css">
+
+</head>
+<body onload="init()">
+
+<div class="topnav">
+  <a href="index.html">Home</a>
+  <a href="blog/index.html">Blog</a>
+  <div class="dropdown">
+    <button class="dropbtn">Reviews <i>&#x25bc;</i> </button>
+    <div class="dropdown-content">
+      <a href="books.html">Book reviews</a>
+      <a href="moocs.html">MOOC reviews</a>
+    </div>
+  </div>
+  <div class="dropdown">
+    <button class="dropbtn">Webapps <i>&#x25bc;</i> </button>
+    <div class="dropdown-content">
+      <a href="https://www.zetaprose.com" target="_blank">NLP fiction analysis tool</a>
+      <a href="steno/index.html">Stenographic handwriting recognition</a>
+      <a href="weatherapp/index.html">Climate comparison tool</a>
+    </div>
+  </div>
+  <div class="dropdown">
+    <button class="dropbtn">Fun <i>&#x25bc;</i> </button>
+    <div class="dropdown-content">
+      <a href="food-frenzy/index.html">Food Frenzy</a>
+      <a href="motus/index.html">Motus (word game)</a>
+      <a href="fish/index.html">Fish (card game)</a>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <h2>MOOC reviews</h2>
+
+
+<div class="bookreview textcard"><div class="coursdiv"><h3 class="coursetitle">Deep Learning Specialisation</h3>
+<h6 class="courseprovider">Andrew Ng, deeplearning.ai (Coursera)</h6>
+</div>
+<ul class="reviewlist">
+<li><b>Content:</b> Five courses, starting from the basics of neural nets, and finishing with CNNs and RNNs. Some deep learning subjects not treated, e.g. variational autoencoders</li>
+<li><b>Review:</b> Great course, same level of quality as Andrew Ng's well-known Machine Learning course. The exercises are very easy, just fill-in-the-blanks in jupyter notebooks (lots of hand-holding, not too much independent thinking needed)</li>
+<li><b>Easiness:</b> 4 / 5</li>
+<li><b>Clarity:</b> 5 / 5</li>
+<li><b>I completed:</b> all videos and notebooks for all courses, paid validated certificate for one course</li>
+</ul>
+</div>
+
+<div class="bookreview textcard"><div class="coursdiv"><h3 class="coursetitle">Natural Language Processing</h3>
+<h6 class="courseprovider">Anna Potapenko, National Research University - Higher School of Economics (Coursera)</h6>
+</div>
+<ul class="reviewlist">
+<li><b>Content:</b> Text classification, language modeling, word embeddings, encoder-decoder architecture for translation</li>
+<li><b>Review:</b> Part of the Deep Learning specialisation by the Russian HSE university. Great instructor, high quality slides and exercises. Exercises are fill-in-the-blanks jupyter notebooks, but require more effort and autonomous thinking than Andrew Ng's deep learning specialisation.</li>
+<li><b>Easiness:</b> 3 / 5</li>
+<li><b>Clarity:</b> 5 / 5</li>
+<li><b>I completed:</b> all videos, quizzes and exercises, validated certificate</li>
+</ul>
+</div>
+
+<div class="bookreview textcard"><div class="coursdiv"><h3 class="coursetitle">Divide and Conquer, Sorting and Searching, and Randomized Algorithms</h3>
+<h6 class="courseprovider">Tim Roughgarden, Stanford University (Coursera)</h6>
+</div>
+<ul class="reviewlist">
+<li><b>Content:</b> How to find Big O complexity for a selection of famous algorithms (Mergesort, Quicksort, Contraction Algorithm for finding the min cut in a graph)</li>
+<li><b>Review:</b> Clear explanations. Detailed demonstration for every algo. Aimed at people who want to determine Big O themselves, not just people who want a basic understanding of Big O.</li>
+<li><b>Easiness:</b> 3 / 5</li>
+<li><b>Clarity:</b> 4 / 5</li>
+<li><b>I completed:</b> all videos, some exos</li>
+</ul>
+</div>
+
+<div class="bookreview textcard"><div class="coursdiv"><h3 class="coursetitle">Mathematics for Machine Learning: PCA</h3>
+<h6 class="courseprovider">Marc P. Deisenroth, Imperial College London (Coursera)</h6>
+</div>
+<ul class="reviewlist">
+<li><b>Content:</b> Details of the mathematics behind Principal Component Analysis</li>
+<li><b>Review:</b> There's a huge difference in difficulty between the first week (how to find the mean of a dataset) and the fourth week (a derivation of PCA more detailed than 90% of the method's users have probably ever seen).</li>
+<li><b>Easiness:</b> 2 / 5</li>
+<li><b>Clarity:</b> 4 / 5</li>
+<li><b>I completed:</b> all videos, some exos</li>
+</ul>
+</div>
+
+<div class="bookreview textcard"><div class="coursdiv"><h3 class="coursetitle">Practical Time Series Analysis</h3>
+<h6 class="courseprovider">William Thistleton, Tural Sadigov, The State University of New York (Coursera)</h6>
+</div>
+<ul class="reviewlist">
+<li><b>Content:</b> All the ingredients of SARIMA, MA, AR, ARMA, ARIMA, SARIMAX</li>
+<li><b>Review:</b> The course is practical and not theoretical. The programming language is R.</li>
+<li><b>Easiness:</b> 2 / 5</li>
+<li><b>Clarity:</b> 4 / 5</li>
+<li><b>I completed:</b> all videos, some exos</li>
+</ul>
+</div>
+
+<div class="bookreview textcard"><div class="coursdiv"><h3 class="coursetitle">Fundamentals of Graphic Design</h3>
+<h6 class="courseprovider">California Institute of the Arts (Coursera)</h6>
+</div>
+<ul class="reviewlist">
+<li><b>Content:</b> How to choose a typeface, how to tell which colours go together, fundamentials of composition and contrast</li>
+<li><b>Review:</b> Extremely basic. Useful for people like me who need to design their own UI for webapps, and have no clue about graphic design, but just want to make their interface a bit less ugly</li>
+<li><b>Easiness:</b> 5 / 5</li>
+<li><b>Clarity:</b> 5 / 5</li>
+<li><b>I completed:</b> watched videos only</li>
+</ul>
+</div>
+
+<div class="bookreview textcard"><div class="coursdiv"><h3 class="coursetitle">Information Theory</h3>
+<h6 class="courseprovider">The Chinese University of Hong Kong (Coursera)</h6>
+</div>
+<ul class="reviewlist">
+<li><b>Review:</b> This is not a true online course, it's more like an audiobook of a pretty dry textbook. In other words, the lecturer simply reads aloud his (text-heavy, image-light) slides. Did not finish.</li>
+<li><b>Easiness:</b> N/A</li>
+<li><b>Clarity:</b> N/A</li>
+<li><b>I completed:</b> abandoned after first week</li>
+</ul>
+</div>
+
+<div class="bookreview textcard"><div class="coursdiv"><h3 class="coursetitle">Discrete Optimization</h3>
+<h6 class="courseprovider">Pascal Van Hentenryck, The University of Melbourne (Coursera)</h6>
+</div>
+<ul class="reviewlist">
+<li><b>Content:</b> Comprehensive overview of discrete optimization methods: constraint programming, dynamic programming, local search, linear programming...</li>
+<li><b>Review:</b> Fun instructor, full of energy, and fun examples that liven up the course. The exercises demand a lot of time and effort. They are wide open, no handholding.</li>
+<li><b>Easiness:</b> 3 / 5</li>
+<li><b>Clarity:</b> 4 / 5</li>
+<li><b>I completed:</b> in progress</li>
+</ul>
+</div>
+
+<div class="bookreview textcard"><div class="coursdiv"><h3 class="coursetitle">Advanced Styling with Responsive Design</h3>
+<h6 class="courseprovider">Colleen van Lent, University of Michigan (Coursera)</h6>
+</div>
+<ul class="reviewlist">
+<li><b>Content:</b> Responsive website design, including bootstrap</li>
+<li><b>Review:</b> Great lecturer, but the pace was very slow and simple. Aimed at people with little programming experience. You can probably learn the same info in an hour by reading a few articles.</li>
+<li><b>Easiness:</b> 5 / 5</li>
+<li><b>Clarity:</b> 5 / 5</li>
+<li><b>I completed:</b> watched videos only</li>
+</ul>
+</div>
+
+<div class="bookreview textcard"><div class="coursdiv"><h3 class="coursetitle">Mathematics for Machine Learning: Linear Algebra</h3>
+<h6 class="courseprovider">Imperial College London (Coursera)</h6>
+</div>
+<ul class="reviewlist">
+<li><b>Content:</b> Exactly what it says in the title</li>
+<li><b>Review:</b> The first week is high-school level, but the later weeks are much more advanced. Useful if you've forgotten or never encountered the Gram-Schmidt process, Einstein summation convention, etc. How to do matrix inversion, eigenbasis etc. with pencil and paper. More detailed than needed for practical applications e.g. if you know what an inverse matrix is and how to obtain one using your favourite package, then maybe you don't care if you've forgotten how to do the inversion by hand. </li>
+<li><b>Easiness:</b> 2 / 5</li>
+<li><b>Clarity:</b> 4 / 5</li>
+<li><b>I completed:</b> videos and quizzes</li>
+</ul>
+</div>
+
+<div class="bookreview textcard"><div class="coursdiv"><h3 class="coursetitle">Bayesian Methods for Machine Learning</h3>
+<h6 class="courseprovider">Daniil Polykovskiy, Alexander Novikov, National Research University - Higher School of Economics (Coursera)</h6>
+</div>
+<ul class="reviewlist">
+<li><b>Content:</b> E-M algorithm, variational inference, Latent Dirichlet Allocation, Markov chain Monte Carlo</li>
+<li><b>Review:</b> Part of the Deep Learning specialisation by the Russian HSE university. Like the other courses in the specialisation, the slides are high quality. Mathematical content is higher than in most deep learning MOOCs.</li>
+<li><b>Easiness:</b> 3 / 5</li>
+<li><b>Clarity:</b> 5 / 5</li>
+<li><b>I completed:</b> in progress</li>
+</ul>
+</div>
+
+<div class="bookreview textcard"><div class="coursdiv"><h3 class="coursetitle">SQL for Data Science</h3>
+<h6 class="courseprovider">Sadie St. Lawrence, University of California, Davis (Coursera)</h6>
+</div>
+<ul class="reviewlist">
+<li><b>Content:</b> Basic introduction to SQL</li>
+<li><b>Review:</b> This course is for absolute beginners, aimed at people who don't know any SQL, have little or no programming experience, and have never taken an online course of any kind.</li>
+<li><b>Easiness:</b> 5 / 5</li>
+<li><b>Clarity:</b> 5 / 5</li>
+<li><b>I completed:</b> did not finish; watched some videos only</li>
+</ul>
+</div>
+
+<!--Introduction to Graph Theory
+
+Introduction to Design Patterns-->
+
+
+
+</div> <!--content>
+
+
+
+
+<div class="footer">
+  <p>CSS stylesheet from W3 schools</p>
+</div>
+
+</body>
+</html>

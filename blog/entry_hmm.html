@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Water on Graphene</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="../stylesheet.css">
+<link rel="stylesheet" type="text/css" href="w3.css">
+<link rel="stylesheet" type="text/css" href="blog.css">
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+</head>
+<body onload="init()">
+
+<div class="topnav">
+  <a href="../index.html">Home</a>
+  <a href="../blog/index.html">Blog</a>
+  <div class="dropdown">
+    <button class="dropbtn">Reviews <i>&#x25bc;</i> </button>
+    <div class="dropdown-content">
+      <a href="../books.html">Book reviews</a>
+      <a href="../moocs.html">MOOC reviews</a>
+    </div>
+  </div>
+  <div class="dropdown">
+    <button class="dropbtn">Webapps <i>&#x25bc;</i> </button>
+    <div class="dropdown-content">
+      <a href="https://www.zetaprose.com" target="_blank">NLP fiction analysis tool</a>
+      <a href="../steno/index.html">Stenographic handwriting recognition</a>
+      <a href="../weatherapp/index.html">Climate comparison tool</a>
+    </div>
+  </div>
+  <div class="dropdown">
+    <button class="dropbtn">Fun <i>&#x25bc;</i> </button>
+    <div class="dropdown-content">
+      <a href="../food-frenzy/index.html">Food Frenzy</a>
+      <a href="../motus/index.html">Motus (word game)</a>
+      <a href="../fish/index.html">Fish (card game)</a>
+    </div>
+  </div>
+</div>
+
+
+<div class="content" style="max-width:1400px">
+
+<!-- Grid -->
+<div class="w3-row">
+
+<!-- Blog entries -->
+<div class="w3-col l8 s12">
+  <!-- Blog entry -->
+  <div class="w3-card-4 w3-margin w3-white">
+    <div class="w3-container textcard">
+
+<h1>Resources for implementing a HMM from scratch</h1>
+<h5 class="subtitle">Reference values for debugging <span class="blogentrydate">May 25, 2018</span></h5>
+
+<p>There exist plenty of off-the-shelf Hidden Markov Model packages such as HMMLearn (previously part of scikit-learn), but if you want to implement one from scratch to understand how it works, you'll be coding three algorithms:</p>
+
+<ul>
+<li>forward part of the forward-backward algorithm - given the transition and emission probabilities and a sequence of observations,  get the probability that the given model generated the given sequence</li>
+
+<li>Baum-Welch algorithm (basically expectation-maximization) - given a sequence of observations, fit the transition and emission probabilities</li>
+
+<li>Viterbi algorithm - given the transition and emission probabilities and a sequence of observations, get the most likely sequence of hidden states</li>
+</ul>
+
+<p>Two great articles that clearly illustrate the Baum-Welch algorithm are:</p>
+
+<a href="https://www.soa.org/Library/Newsletters/Forecasting-Futurism/2013/december/ffn-2013-iss8-grossmiller.aspx">Hidden Markov Models and You, Part Two, Society of Actuaries, Forecasting and Futurism, Dec 2013</a>
+
+<p>Goes through the Baum-Welch algorithm step-by-step, giving example calculations for each individual part of the expectation and maximization steps. Perfect for use as reference values for debugging.</p>
+
+<a href="https://cs.jhu.edu/~jason/papers/eisner.tnlp02.pdf">An Interactive Spreadsheet for Teaching the Forward-Backward Algorithm</a> by Jason Eisner
+<p>This is the origin of the popular Baltimore ice cream example (observations = number of ice creams sold, hidden states = hot or cold weather). Actually I didn't use it, but it looks pretty detailed, and there's an Excel spreadsheet with example calculations</p>
+
+<p>For the Viterbi algorithm, some sample data one can use for testing/debugging:</p>
+
+<p><a href="http://blog.ivank.net/viterbi-algorithm-clarified.html">Ivan Kutskir's blog</a></p>
+
+<p><a href="http://www.blackarbs.com/blog/introduction-hidden-markov-models-python-networkx-sklearn/2/9/2017">Blackarbs blog</a></p>
+
+<p>(Viterbi algorithm is not the only possibility here, just the most common one.)</p>
+
+<p>Finally of course I have to mention the classic HMM tutorial paper from the 80s</p>
+
+<p><a href="www.robots.ox.ac.uk/~vgg/rg/papers/hmm.pdf">A Tutorial on Hidden Markov Models and Selected Applications in Speech Recognition</a> by Lawrence Rabiner</p>
+
+<p>Extremely detailed and yet very readable. Also includes all the practical implementation details that simplistic tutorials leave out (scaling to avoid terms going to zero, choice of initial estimates, effects of insufficient training data).</p>
+
+
+<!-- END BLOG ENTRY -->
+</div>
+</div>
+
+<!-- END BLOG ENTRIES -->
+</div>
+
+<!-- Blog Home -->
+<div>
+    <p><a class="w3-button w3-padding-large w3-white w3-border" href="index.html"><b>BACK TO BLOG HOME</b></a></p>
+</div>
+
+
+<!-- Introduction menu -->
+<div class="w3-col l4">
+
+  <!-- Posts -->
+  <div class="w3-card w3-margin textcard">
+    <div class="w3-container w3-padding">
+      <h4>Top Posts</h4>
+    </div>
+    <ul class="w3-ul w3-hoverable w3-white">
+      <li class="w3-padding-16">
+        <span class="w3-large"><a href="entry_matrix_dimensions_nn.html">2018-04-02 Matrix Dimensions in Neural Networks</a></span><br>
+      </li>
+      <li class="w3-padding-16">
+        <span class="w3-large"><a href="entry_hmm.html">2018-05-25 Resources for implementing a HMM from scratch</a></span><br>
+      </li>
+      <li class="w3-padding-16">
+        <span class="w3-large"><a href="entry_wordcounts.html">2018-08-15 Page counts and word counts by literary genre</a></span><br>
+      </li>
+    </ul>
+  </div>
+  <hr>
+
+  <!-- Labels / tags -->
+  <!--<div class="w3-card w3-margin">
+    <div class="w3-container w3-padding">
+      <h4>Tags</h4>
+    </div>
+    <div class="w3-container w3-white" id="tags">
+      <span class="w3-tag w3-light-grey w3-margin-bottom blogtag"><a href="tags_ml_algos.html">ML algos</a></span> 
+      <span class="w3-tag w3-light-grey w3-margin-bottom blogtag"><a href="tags_viz.html">analysis and viz</a></span> 
+      <span class="w3-tag w3-light-grey w3-margin-bottom blogtag"><a href="tags_nlp.html">NLP</a></span>
+    </p>
+    </div>
+  </div>-->
+
+<!-- END Introduction Menu -->
+</div>
+
+<!-- END GRID -->
+</div><br>
+
+<!-- END content -->
+</div>
+
+<!-- Footer -->
+<!--
+<footer class="w3-container w3-dark-grey w3-padding-32 w3-margin-top">
+  <button class="w3-button w3-black w3-disabled w3-padding-large w3-margin-bottom">Previous</button>
+  <button class="w3-button w3-black w3-padding-large w3-margin-bottom">Next &raquo</button>
+</footer>
+-->
+
+
+
+<div class="footer">
+  <p>CSS stylesheet from W3 schools</p>
+</div>
+
+</body>
+</html>
+

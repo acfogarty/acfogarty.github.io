@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Water on Graphene</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="../stylesheet.css">
+<link rel="stylesheet" type="text/css" href="w3.css">
+<link rel="stylesheet" type="text/css" href="blog.css">
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+</head>
+
+<body>
+
+<div class="content" style="max-width:1400px">
+
+<!-- Grid -->
+<div class="w3-row">
+
+<!-- Blog entries -->
+<div class="w3-col l8 s12">
+  <!-- Blog entry -->
+  <div class="w3-card-4 w3-margin w3-white">
+    <div class="w3-container textcard">
+
+<h1>Implement and Visualise a Self-Organising Map in Python</h1>
+<h5 class="subtitle">Construct a non-linear feature map and visualise it using a U-matrix <span class="blogentrydate">November 12, 2019</span></h5>
+
+<p>
+Self-organising maps (SOMs) are an unsupervised learning technique that use a neural network architecture. SOMs can be seen as both a clustering and a dimensionality reduction algorithm. In fact, they map from a high dimensionl to a low dimensional (usually 2D) space, in such a way that topological relationships<a href="#footnote1">[1]</a> between datapoints in the original dataset are maintained in the new low-dimensional space.</p>
+
+<p>
+You're probably familiar with the use of artificial neural networks in supervised learning, where backpropogation with gradient descent is used to fit the ANN's weights to reproduce the known labels of the training set. SOM neural networks work in a very different way. When you train an SOM, there is no backpropogation and no gradient descent. There are no activation functions, and weights and nodes have a very different meaning.</p>
+
+<p>Instead, an iterative algorithm uses competitive learning to determine which output neuron should be excited by each input vector.
+</p>
+
+<p>
+<i>Note: besides self-organising maps, other unsupervised neural network approaches also exist, including autoencoders and Adaptive Resonance Theory. One method particularly close to SOMs is the neural gas, which was inspired by the SOM approach and uses a similar iterative algorithm.</i>
+</p>
+
+
+<p>
+The SOM algorithm is fairly simple to implement, indeed much more so than supervised neural networks, as there is no backpropogation. You can find an excellent explanation here: http://www.ai-junkie.com/ann/som/som1.html. However, visualisation of the resulting map is a little less well documented. In this article, we'll cover both the algorithm and the visualisation of the results.
+</p>
+
+
+
+<h2>The Self-organising Map algorithm</h2>
+
+<p>
+An SOM maps your input data, which lives in a continuous input space, onto a discrete lattice (a grid of nodes). The neural network architecture for an SOM consists of two layers: one layer for your original input data and one layer for the output lattice. The lattice could be 1D, 2D or higher dimensional <a href="#footnote2">[2]</a>. In this post, we'll stick to a 2D output lattice, as that is the easiest to visualise., 
+</p>
+
+<img src="lattice illustration">
+
+<p>
+The aim of the SOM algorithm is to group together input data points with similar feature vectors, mapping them to the same or neighbouring points in the output lattice. This feature map is a non-linear transformation which reduced the dimensionality of the data.
+</p>
+
+<p>
+The input data is stored in an array of dimensions $n_{samples} * n_{features}$. The 2D output lattice will be $n_{width}$ nodes wide and $n_{height}$ nodes high. You choose the size of the output layer depending on how granular you want your output clustering to be. Each node in the output lattice has an associated weights vector of length $n_{features}$, i.e. the same shape as your input vectors.
+The weights array associated with the output lattice will therefore have dimensions $n_{width} * n_{height} * n_{features}$.
+</p>
+
+<p>
+At the end of the training, each of the $n_{samples}$ input datapoints will be mapped to one of the nodes in the output lattice. Some lattice nodes will have multiple associated input datapoints, while other nodes may have none.
+</p>
+
+<p>
+Practically speaking, this a reduction from $n_{features}$ dimensions to 2 dimensions.
+</p>
+
+<p>
+Before going through the SOM algorithm in detail, we need to clarify two definitions first:
+</p>
+
+<ul>
+<li><i>A measure of distance between two feature vectors:</i> This can be whatever seems appropriate for the problem at hand. A common choice is the Euclidean distance. This metric is needed in order to calculate distances between the input vectors and the output lattice weight vectors.</li>
+
+<li><i>The neighbourhood of a node:</i> The neighbourhood of a node contains all of the other nodes which are "close" to that node. Strictly speaking, "closeness" does not have to be defined using the same distance metric as above. In practice, in most casses the simple Euclidean distance within the node grid is used, e.g. the distance between nodes (1,5) and (1,8) is 3, the distance between node (1,2) and (2,3) is sqrt(2), etc. 
+Note: this is simply the distance between nodes in the lattice along the grid dimensions, not the distance between the weights of the nodes.
+All nodes with a radius $\sigma$ of the BMU are considered to be in the neighbourhood of the BMU.
+</li>
+</ul>
+
+<p>
+The steps of the SOM algorithm are as follows:
+</p>
+
+<ol>
+<li>
+Randomly initialize the weights. (The weights array has dimensions $n_{width} * n_{height} * n_{features}$.)
+</li>
+
+<li>
+Choose a vector $V$ at random from the input data (training set). (The vector has length $n_{features}$.)
+</li>
+
+<li>
+Loop over all $n_{width} * n_{height}$ nodes in the output lattice, and determine which node's weights vector is closest to the randomly chosen input vector $V$. The chosen node is called the Best Matching Unit or BMU.
+</li>
+
+<li>
+Select all nodes that are in the neighbourhood of the BMU.
+</li>
+
+<li>
+Update the weights of all lattice nodes in the BMU's neighbourhood to make them more similar to the input vector $V$. This update is performed according to the expression: XXX
+
+$W(t+1) = W(t) + \theta(t)\lambda(t)(V - W(t))$
+
+$\theta$ varies with the distance from the BMU
+
+In other words, the closer a node is to the BMU, the larger the change in its weights,  with an effect that decreases with distance.
+
+$\lambda(t) = \lambda_0 exp (-t/\tau_l)$
+
+$\tau_l$ is a hyperparameter
+
+Usually $sigma$ will also decrease in time, for example via
+
+$\sigma(t) = \sigma_0 exp (-t/\tau_s)$
+
+where $t$ is the number of iterations since initialisation and $\tau_s$, like $\tau_l$ is a hyperparameter of the algorithm.
+
+
+</li>
+
+<li>
+Repeat from step 2.
+</li>
+
+</ol>
+
+<p>
+So why is the SOM algorithm referred to as a <i>competitive learning</i> approach? This is because in an SOM, only one neuron can be activated at any one time, namely the BMU. The neurons compete to be activated, and the best neuron wins. (This happens in Step 3 of the algorithm.)
+<p>
+
+</p>
+And why is it called <i>self-organising</i>? This is because of the <i>lateral inhibition connections</i> that force the neurons in the output lattice to self-organize themselves such that similar neurons are closer together. (These lateral connections are seen in Step 5 of the algorithm)
+</p>
+
+<h2>Differences between SOMs and supervised ANNs</h2>
+
+<p>
+As you can see, SOMs are so different from supervised ANNs (CNNs, RNNs, and so on) that the analogy between the supervised and unsupervised approaches is not particularly useful when it comes to understanding how SOMs work. In fact, you may find it more useful just to forget everything you know about supervised ANNs!
+</p>
+
+<p>
+The following table summarises the main differences between supervised ANNs and SOMs:
+</p>
+
+<table>
+<th>
+<td>
+supervised Artificial Neural Network
+</td>
+<td>
+Self-Organising Map
+</td>
+</th>
+<tr>
+<td>
+type
+</td>
+<td>
+supervised
+</td>
+<td>
+unsupervised
+</td>
+</tr>
+<tr>
+<td>
+common applications
+</td>
+<td>
+classification, regression
+</td>
+<td>
+dimensionality reduction, clustering
+</td>
+</tr>
+<tr>
+<td>
+training algorithm
+</td>
+<td>
+backpropogation with gradient descent
+</td>
+<td>
+iterative algorithm specific to SOMs
+</td>
+</tr>
+<tr>
+<td>
+number of layers
+</td>
+<td>
+as many as you like
+</td>
+<td>
+usually only one
+</td>
+</tr>
+<tr>
+<td>
+weights
+</td>
+<td>
+usually hidden parameters which are treated as a 'black box' and not interpreted
+</td>
+<td>
+used to visualise and interpret the algorithm's results
+</td>
+</tr>
+</table>
+
+<h2>Python implementation of the SOM algorithm</h2>
+
+<p>
+Several python packages implementing the SOM algorithm exist, including minisom and sompy.
+It's also very easy to implement it yourself.
+</p>
+
+<p>
+Here is some python code implementing the SOM iterative learning algorithm. (The complete code can be found at <a href="github.com/acfogarty/algos-from-scratch/som">github.com/acfogarty/algos-from-scratch/som</a>)
+</p>
+
+<p>
+First, the learning step in which we fit the weights which will constitute our feature map:
+</p>
+
+<pre>
+def update_weights(X, weights, hyperparameters, t):
+    """
+    Randomly choose one vector from X, find Best Matching Unit in weights,
+    and update the weights according the the SOM algorithm
+    Args:
+        X (np.array): training set of dimensions samples_dim * features_dim
+        weights (np.array): dimensions lattice_dim[0] * lattice_dim[1] 
+                                                      * features_dim
+        hyperparameters (dict)
+        t (int): timestep since time 0
+    Returns:
+        updated weights (np.array)
+        distance from chosen X vector to BMU (float)
+    """
+
+    # number of samples in the training set
+    samples_dim = X.shape[0]
+
+    # dimensions of the 2D output lattice
+    lattice_dim = weights.shape[:2]
+
+    # randomly choose a feature vector from the training set
+    index_random = np.random.randint(low=0, high=samples_dim)
+
+    # compare feature vector to the weights vector of all nodes
+    dist = np.zeros(lattice_dim, dtype=np.float64)
+    for i in range(lattice_dim[0]):
+        for j in range(lattice_dim[1]):
+            dist[i,j] = np.linalg.norm(weights[i,j]-X[index_random])
+
+    # Best Matching Unit (node whose weights are closest to input vector)
+    index_bmu = np.unravel_index(dist.argmin(), dist.shape)
+    
+    # get radius of BMU neighbourhood at time t
+    sigma_t = hyperparameters['sigma_0'] * \
+              np.exp(-t / hyperparameters['lambda_sigma'])
+    sigma_t_sq_2 = 2 * sigma_t * sigma_t
+    
+    # get learning rate at time t
+    learning_rate_t = hyperparameters['learning_rate_0'] * \
+                      np.exp(-t / hyperparameters['lambda_lr'])
+
+    # update weights based on distance from BMU
+    for i in range(lattice_dim[0]):
+        for j in range(lattice_dim[1]):
+            
+            # factor depending on grid distance of each node from BMU
+            dist_sq = (i - index_bmu[0])*(i - index_bmu[0]) + \
+                      (j - index_bmu[1])*(j - index_bmu[1])
+            theta_ij = np.exp(-dist_sq / sigma_t_sq_2)
+            update_factor = learning_rate_t * theta_ij * \
+                            (X[index_random] - weights[i,j])
+
+            weights[i,j] += update_factor
+
+    # return distance of input feature vector to BMU 
+    # (for monitoring the progress of training)
+    return weights, dist[index_bmu]
+</pre>
+
+<p>
+Now that the weights array has been fitted using our training dataset, we need a function which will map any dataset into the lower dimensional space by assigning each datapoint to one of the nodes in the output lattice. 
+</p>
+
+<h2>Visualisation and interpretation of the output</h2>
+
+<p>
+Now that we have built and fitted the model, the next step is to understand and interpret the results.  The weights array is three-dimensional ($n_{height} * n_{weight} * n_{features}$), but for ease of visualisation we need a two-dimensional array to plot. This is achieved using a U-matrix.
+</p>
+
+<p>
+A U-matrix is
+</p>
+
+<pre>
+import numpy as np
+</pre>
+
+  <h4>Notes and footnotes</h4>
+
+<p>
+Useful resources:
+</p>
+
+<p>
+http://www.cs.bham.ac.uk/~jxb/NN/l16.pdf
+</p>
+<p>
+http://www.cs.bham.ac.uk/~jxb/NN/l17.pdf
+</p>
+<p>
+http://www.ai-junkie.com/ann/som/som1.html
+</p>
+  
+  <div class="footnotes"> 
+<p id="footnote1">Footnote [1] "Topological relationships" means relationships such as "equals", "is within", "contains", or "are disjoint". So for example, if your original high-dimensional dataset contains two spatially disjoint sets of points A and B, A and B will also be disjoint in the low-dimensional mapped dataset.</p>
+
+<p id="footnote2">Footnote [2] The SOM algorithm is most commonly used with a 2D output lattice, although the exact same algorithm can be applied to higher dimensional lattices with no changes (although it will of course be more difficult to visualise).</p>
+  </div> <!-- end footnotes -->
+
+<!-- END BLOG ENTRY -->
+</div>
+</div>
+
+<!-- END BLOG ENTRIES -->
+</div>
+
+DELETED
+
+cdon't have the same meaning as in supervisedlusters can be detected
+Let's quickly summarise the differences
+BMU etc.
+each input is a vector of length M, and each node has an associated weights vector of the same length, M
+
+So the weights array has dimensions of H x V x N
+
+You choose the number of dimensions, usually two, and the number of nodes in each direction
+Using the distance measure
+much easier to implement than 
+fully connected 
+The array dimensions for the input data will be ?
+E d d d in the output latticexample: we're reducing from X to 2 dimensions???????
+In other words, nodes close to the BMU are also excited,
+The paramater $\sigma$ defines the neighbourhood
+To aid comprehension, j j j j 
+<tr>
+<td>
+nodes
+</td>
+<td>
+inner hidden stuff
+</td>
+<td>
+the actual output
+</td>
+</tr>
+t(negative feedback paths) he output of the algorithm, the results which must be interpreted
